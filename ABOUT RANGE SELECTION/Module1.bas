@@ -2,18 +2,6 @@ Attribute VB_Name = "Module1"
 Option Explicit
 
 Sub RangeDescription()
-    Dim NumCols As Integer
-    Dim NumRows As Long
-    Dim NumBlocks As Integer
-    Dim NumCells As Double
-    Dim NumAreas As Integer
-    Dim SelType As String
-    Dim FirstAreaType As String
-    Dim CurrentType  As String
-    Dim WhatSelected As String
-    Dim UnionRange As Range
-    Dim Area As Range
-    Dim Msg As String
 
 '   Quit if a range is not selected
     If TypeName(Selection) <> "Range" Then
@@ -22,25 +10,28 @@ Sub RangeDescription()
     End If
 
 '   Initialize counters
-    NumCols = 0
-    NumRows = 0
-    NumBlocks = 0
-    NumCells = 0
+    Dim NumCols As Integer: NumCols = 0
+    Dim NumRows As Long: NumRows = 0
+    Dim NumBlocks As Integer: NumBlocks = 0
+    Dim NumCells As Double: NumCells = 0
 
 '   Determine number of areas in selection
-    NumAreas = Selection.Areas.Count
+    Dim NumAreas As Integer: NumAreas = Selection.Areas.Count
+    Dim SelType As String: SelType = ""
     If NumAreas = 1 Then
         SelType = "Single Selection"
     Else
         SelType = "Multiple Selection"
     End If
-
-    FirstAreaType = AreaType(Selection.Areas(1))
-    WhatSelected = FirstAreaType
+    
+    Dim FirstAreaType As String: FirstAreaType = AreaType(Selection.Areas(1))
+    Dim WhatSelected As String: WhatSelected = FirstAreaType
 
 '   Build the union of all areas to avoid double-counting
-    Set UnionRange = Selection.Areas(1)
+    Dim UnionRange As Range: Set UnionRange = Selection.Areas(1)
     
+    Dim CurrentType As String: CurrentType = ""
+    Dim Area As Range: Set Area = Range("A1")
     For Each Area In Selection.Areas
         CurrentType = AreaType(Area)
 
@@ -51,7 +42,7 @@ Sub RangeDescription()
 '       Change label if multiple selection is "mixed"
         If CurrentType <> FirstAreaType Then WhatSelected = "Mixed"
     Next Area
-
+    
 '   Loop through each area in the Union range
     For Each Area In UnionRange.Areas
         Select Case AreaType(Area)
@@ -69,7 +60,7 @@ Sub RangeDescription()
 
 '   Count number of non-overlapping cells
     NumCells = UnionRange.CountLarge
-
+    Dim Msg As String: Msg = ""
     Msg = "Selection Type:" & vbTab & WhatSelected & vbCrLf
     Msg = Msg & "No. of Areas:" & vbTab & NumAreas & vbCrLf
     Msg = Msg & "Full Columns: " & vbTab & NumCols & vbCrLf
